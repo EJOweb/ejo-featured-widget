@@ -6,7 +6,7 @@
  * Author: EJOweb
  * Author URI: http://www.ejoweb.nl/
  * 
- * GitHub Plugin URI: EJOweb/ejo-featured-widget
+ * GitHub Plugin URI: https://github.com/EJOweb/ejo-featured-widget.git
  */
 
 //* Als ik wil dat features die worden uitgeschakeld nog wel informatie bevatten dan moet ik een variabele 'active' toevoegen waarop gechecked wordt. 
@@ -31,7 +31,7 @@ class EJO_Featured_Widget extends WP_Widget {
 
 	var $title = 'EJO Featured Widget';
 	var $tag = 'ejo-featured-widget';
-	var $db = '0.1';
+	var $db = '0.1.1';
 	var $feature_list = array( 'image', 'title', 'subtitle', 'info', 'linktext' );
 	var $imagesize = 'home-featured';
 
