@@ -1,17 +1,15 @@
 <?php
 /*
-Plugin Name: Featured Widget by EJOweb
-Description: Flexible widget to create featured content in Widget Areas. Images, icons, titles, info, link and url.
-Version: 0.1.1
-Author: EJOweb
-Author URI: http://www.ejoweb.nl/
-*/
+ * Plugin Name: Featured Widget by EJOweb
+ * Description: Flexible widget to create featured content in Widget Areas. Images, icons, titles, info, link and url.
+ * Version: 0.1.1
+ * Author: EJOweb
+ * Author URI: http://www.ejoweb.nl/
+ * 
+ * GitHub Plugin URI: EJOweb/ejo-featured-widget
+ */
 
-/*
-
-Als ik wil dat features die worden uitgeschakeld nog wel informatie bevatten dan moet ik een variabele 'active' toevoegen waarop gechecked wordt. 
-
-*/
+//* Als ik wil dat features die worden uitgeschakeld nog wel informatie bevatten dan moet ik een variabele 'active' toevoegen waarop gechecked wordt. 
 
 /** 
  * Register Widget
