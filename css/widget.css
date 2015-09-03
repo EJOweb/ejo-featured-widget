@@ -1,0 +1,70 @@
+/* This stylesheet is used to style the public view of the widget. */
+
+.ejo-featured-widget{
+    clear: both;
+}
+
+.ejo-featured-widget-form{
+    max-width: 100%;
+    padding: 0 0.5em 1em;
+    overflow: hidden;
+}
+
+.ejo-featured-widget-form label.taxlabel{
+    font-size: 1.1em;
+    font-weight: bold;
+    line-height: 2em;
+    padding: 0 0.5em;
+}
+.ejo-featured-widget-form select,
+.ejo-featured-widget-form .input_search{
+    width:100%;
+}
+.ejo-featured-widget-form .input_cf{
+    width:25%;
+}
+.ejo-featured-widget-form input[type="text"]{
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}            
+.ejo-featured-widget-form button,
+.ejo-featured-widget-form input, 
+.ejo-featured-widget-form select{
+    font-size: 100%;
+    margin: 0 0 0.3em;
+    vertical-align: baseline;
+}
+.ejo-featured-widget-form ul {
+    margin: 0;
+}
+.ejo-featured-widget-form ul ul{
+    margin-bottom: 0;
+    margin-left: 1.2em;
+}
+.ejo-featured-widget-form li{
+    list-style: none;
+}
+.ejo-featured-widget-form input[type="submit"]{
+    margin:0.3em 0 0 0;
+    float:right;
+}
+.ejo-featured-widget-form .loading_img{
+    width:43px;
+    height:11px;
+    background-image: url('ajax-loader.gif');
+    display:block;
+    margin:7px auto 8px;
+    overflow: hidden;
+}
+.ejo-featured-widget-form .reset_button{
+    display: block;
+    float: left;
+    padding: 0.5em;
+}
+.ejo-featured-widget-form li span{
+    zoom: 1;
+    filter: alpha(opacity=60);
+    opacity: 0.6;
+    font-size: 0.9em;
+}
