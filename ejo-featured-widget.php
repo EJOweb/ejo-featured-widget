@@ -7,6 +7,7 @@
 	Author URI: http://www.ejoweb.nl/
 	
 	GitHub Plugin URI: https://github.com/EJOweb/ejo-featured-widget.git
+	GitHub Branch:     basiswebsite
  */
 
 //* Register Widget
