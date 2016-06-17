@@ -1,12 +1,12 @@
 <?php
 /*
-	Plugin Name: Featured Widget
+	Plugin Name: EJO Featured Widget
 	Description: A widget to show title, image or icon, text and a button
 	Version: 0.2
 	Author: EJOweb
 	Author URI: http://www.ejoweb.nl/
 	
-	GitHub Plugin URI: https://github.com/EJOweb/ejo-featured-widget.git
+	GitHub Plugin URI: https://github.com/EJOweb/ejo-featured-widget
 	GitHub Branch:     basiswebsite
  */
 
