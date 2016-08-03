@@ -76,6 +76,9 @@ final class EJO_Featured_Widget extends WP_Widget
             'link_text' => __('Lees meer', 'ejo-featured-widget'),
         )));
 
+        //* Allow theme to override image size
+        $image_size = apply_filters( 'ejo_featured_widget_image_size', 'thumbnail' );
+
         /* Run $text through filter */
 		$text = apply_filters( 'widget_text', $text, $instance, $this );
 		?>
@@ -85,7 +88,7 @@ final class EJO_Featured_Widget extends WP_Widget
 		<?php if (!empty($image_id)) : // Check if there is an image_id ?>
 			
 			<div class="featured-image-container">
-				<?php echo wp_get_attachment_image( $image_id, 'featured', false, array('class'=>'featured-image') ); ?>
+				<?php echo wp_get_attachment_image( $image_id, $image_size, false, array('class'=>'featured-image') ); ?>
 			</div>
 
 		<?php endif; // END image_id check ?>
