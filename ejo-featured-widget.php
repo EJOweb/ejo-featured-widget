@@ -2,7 +2,7 @@
 /*
 	Plugin Name: EJO Featured Widget
 	Description: A widget to show title, image or icon, text and a button
-	Version: 0.2
+	Version: 0.2.1
 	Author: EJOweb
 	Author URI: http://www.ejoweb.nl/
 	
@@ -28,15 +28,11 @@ function ejo_featured_widget_styles_and_scripts($hook)
 		 * Scripts
 		 */
 		wp_enqueue_script( 'ejo-featured-widget-admin', plugins_url( 'js/admin-widget.js', __FILE__ ), array( 'jquery' ) );
-		wp_enqueue_script( 'ejo-image-select', plugins_url( 'js/admin-image-select.js', __FILE__ ), array( 'jquery' ) );
-
 
 		/**
 		 * Styles
 		 */
-    	wp_enqueue_media();     
 		wp_enqueue_style( 'ejo-featured-widget-admin', plugins_url( 'css/admin-widget.css', __FILE__ ) );
-		wp_enqueue_style( 'ejo-image-select',  plugins_url( 'css/admin-image-select.css', __FILE__ ) );
 	}
 }
 
@@ -147,20 +143,9 @@ final class EJO_Featured_Widget extends WP_Widget
 			<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $title; ?>" />
 		</p>
 
-		<div class="ejo-image-upload">
-            <label>Uitgelichte afbeelding</label>
-            <p class="image-container">
-                <?php if ( $image_id ) : ?>
-
-                    <?php echo wp_get_attachment_image( $image_id, 'thumbnail', false ); ?>
-
-                <?php endif; ?>
-            </p>
-
-            <input type="hidden" id="<?php echo $this->get_field_id('image_id'); ?>" name="<?php echo $this->get_field_name('image_id'); ?>" value="<?php echo $image_id; ?>" class="image-id" />
-            <a class="button upload-button" href="#">Kies een afbeelding</a>
-            <a class="button remove-button" href="#">Verwijder</a>
-        </div>
+		<?php 
+		ejo_image_select( $image_id, $this->get_field_id('image_id'), $this->get_field_name('image_id') );
+      	?>
 
         <p>
 			<label for="<?php echo $this->get_field_id('icon'); ?>"><?php _e('Icon:') ?></label>
