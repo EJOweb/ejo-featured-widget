@@ -53,7 +53,7 @@ final class EJO_Featured_Widget extends WP_Widget
 			'description' => __('Displays a simple widget with title, image/icon, text and button', 'ejoweb'),
 		);
 
-		$widget_control = array( 'width' => 600 );
+		$widget_control = array( 'width' => 800, 'height' => 600 );
 
 		parent::__construct( 'ejo-featured-widget', $widget_title, $widget_info, $widget_control );
 	}
@@ -127,39 +127,57 @@ final class EJO_Featured_Widget extends WP_Widget
 	 */
  	public function form( $instance ) 
  	{
-		/** 
-		 * Combine $instance data with defaults
-		 * Then extract variables of this array
-		 */
-        extract( wp_parse_args( $instance, array( 
-            'image_id' => '',
+		//* Combine $instance data with defaults
+		$instance = wp_parse_args( (array) $instance, array(
+			'image_id' => '',
             'icon' => '',
             'title' => '',
             'text' => '',
             'linked_page_id' => '',
             'link_text' => '',
-        )));
+		));
 
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:') ?></label>
-			<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $title; ?>" />
+			<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $instance['title']; ?>" />
 		</p>
 
 		<?php 
-		ejo_image_select( $image_id, $this->get_field_id('image_id'), $this->get_field_name('image_id') );
+		ejo_image_select( $instance['image_id'], $this->get_field_id('image_id'), $this->get_field_name('image_id') );
       	?>
 
         <p>
 			<label for="<?php echo $this->get_field_id('icon'); ?>"><?php _e('Icon:') ?></label>
-			<input type="text" class="widefat ejo-icon-picker" id="<?php echo $this->get_field_id('icon'); ?>" name="<?php echo $this->get_field_name('icon'); ?>" value="<?php echo $icon; ?>" />
+			<input type="text" class="widefat ejo-icon-picker" id="<?php echo $this->get_field_id('icon'); ?>" name="<?php echo $this->get_field_name('icon'); ?>" value="<?php echo $instance['icon']; ?>" />
 			<?php //<span class="input-group-addon"><i class="fa fa-archive"></i></span> ?>
 		</p>
 
+		<?php /*
 		<p>
 			<label for="<?php echo $this->get_field_id('text'); ?>"><?php _e('Text:') ?></label>
-			<textarea class="widefat" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>" rows="5"><?php echo $text; ?></textarea>
+			<textarea class="widefat" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>" rows="5"><?php echo $instance['text']; ?></textarea>
 		</p>
+		*/ ?>
+
+		<?php
+		$black_studio_tinymce_editor_type = 'visual'; // Show visual tab by default
+		$black_studio_tinymce_editor_filter = 1; // Use wpautop ??
+		?>
+		
+		<p>
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
+			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo $instance['title']; ?>" />
+		</p>
+		
+		<?php 
+		// write_log($this->get_field_id( 'text' ));
+		// write_log('widget-black-studio-tinymce-'.$this->number.'-text');
+		// do_action( 'black_studio_tinymce_editor', $text, $this->get_field_id( 'text' ), $this->get_field_name( 'text' ), $black_studio_tinymce_editor_type ); 
+		// wp_editor( $text, $this->get_field_id( 'text' ), array( 'textarea_name' => $this->get_field_name( 'text' ), 'default_editor' => 'tmce' ) );
+		wp_editor( $instance['text'], 'widget-black-studio-tinymce-'.$this->number.'-text', array( 'textarea_name' => $this->get_field_name( 'text' ), 'default_editor' => 'tmce' ) );
+		do_action( 'black_studio_tinymce_after_editor' );
+		?>
 
 		<p>
 			<label for="<?php echo $this->get_field_id('linked_page_id'); ?>"><?php _e('Linken naar pagina:') ?></label>
@@ -168,7 +186,7 @@ final class EJO_Featured_Widget extends WP_Widget
 					$all_pages = get_pages();
 
 					foreach ($all_pages as $page) {
-						$selected = selected($linked_page_id, $page->ID, false);
+						$selected = selected($instance['linked_page_id'], $page->ID, false);
 						echo "<option value='".$page->ID."' ".$selected.">".$page->post_title."</option>";
 					}
 				?>
@@ -177,7 +195,7 @@ final class EJO_Featured_Widget extends WP_Widget
 
 		<p>
 			<label for="<?php echo $this->get_field_id('link_text'); ?>"><?php _e('Link tekst:') ?></label>
-			<input type="text" class="widefat" id="<?php echo $this->get_field_id('link_text'); ?>" name="<?php echo $this->get_field_name('link_text'); ?>" value="<?php echo $link_text; ?>" />
+			<input type="text" class="widefat" id="<?php echo $this->get_field_id('link_text'); ?>" name="<?php echo $this->get_field_name('link_text'); ?>" value="<?php echo $instance['link_text']; ?>" />
 		</p>
 
 		<?php
@@ -200,11 +218,18 @@ final class EJO_Featured_Widget extends WP_Widget
 		/* Store icon */
 		$instance['icon'] = $new_instance['icon'];
 
-		/* Store text */
+		//* Store text
 		if ( current_user_can('unfiltered_html') )
 			$instance['text'] =  $new_instance['text'];
 		else
 			$instance['text'] = wp_kses_post( stripslashes( $new_instance['text'] ) );
+
+		// if ( current_user_can( 'unfiltered_html' ) ) {
+		// 	$instance['text'] = $new_instance['text'];
+		// }
+		// else {
+		// 	$instance['text'] = stripslashes( wp_filter_post_kses( addslashes( $new_instance['text'] ) ) ); // wp_filter_post_kses() expects slashed
+		// }
 
 		/* Store link */
 		$instance['linked_page_id'] = $new_instance['linked_page_id'];
