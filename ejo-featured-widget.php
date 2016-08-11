@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EJO Featured Widget
  * Description: A widget to show title, image or icon, text and a button
- * Version: 	0.2.1
+ * Version: 	0.3
  * Author: 		EJOweb
  * Author URI: 	http://www.ejoweb.nl/
  * 
@@ -10,204 +10,83 @@
  * GitHub Branch:     basiswebsite
  */
 
-//* Register Widget
-add_action( 'widgets_init', function() { 
-    register_widget( 'EJO_Featured_Widget' ); 
-} );
-
-//* Add custom styles & scripts
-add_action( 'admin_enqueue_scripts', 'ejo_featured_widget_styles_and_scripts', 99 );
-
 /**
  *
  */
-function ejo_featured_widget_styles_and_scripts($hook)
+final class EJO_Featured_Widget_Plugin
 {
-	if ($hook == 'widgets.php') {
-		/**
-		 * Scripts
-		 */
-		wp_enqueue_script( 'ejo-featured-widget-admin', plugins_url( 'js/admin-widget.js', __FILE__ ), array( 'jquery' ) );
+	//* Slug of this plugin
+    const SLUG = 'ejo-featured-widget';
 
-		/**
-		 * Styles
-		 */
-		wp_enqueue_style( 'ejo-featured-widget-admin', plugins_url( 'css/admin-widget.css', __FILE__ ) );
+    //* Version number of this plugin
+    const VERSION = '0.3';
+
+    //* Stores the directory path for this plugin.
+    public static $dir;
+
+    //* Stores the directory URI for this plugin.
+    public static $uri;
+
+    //* Holds the instance of this class.
+    protected static $_instance = null;
+
+    //* Only instantiate once
+    public static function init() 
+    {
+        if ( !self::$_instance )
+            self::$_instance = new self;
+        return self::$_instance;
+    }
+
+    //* No clones please!
+    protected function __clone() {}
+
+    //* Plugin setup.
+    protected function __construct() 
+    {
+		//* Setup
+        add_action( 'plugins_loaded', array( $this, 'setup' ), 1 );
+
+        // Include required files
+		include_once( self::$dir . 'includes/class-widget.php' );
+
+		//* Add custom styles & scripts
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles_and_scripts' ) );
+
+        //* Register widget
+        add_action( 'widgets_init', array( $this, 'widgets_init' ) );
+    }
+
+    //* Defines the directory path and URI for the plugin.
+    public function setup() 
+    {
+    	//* Set plugin dir and uri
+        self::$dir = plugin_dir_path( __FILE__ ); // with trailing slash
+        self::$uri = plugin_dir_url( __FILE__ ); // with trailing slash
+
+        //* Load the translation for the plugin
+        load_plugin_textdomain( self::SLUG, false, self::SLUG.'/languages' );
+    }
+
+    //* Admin Styles & Scripts
+	function admin_styles_and_scripts( $hook )
+	{
+		if ($hook != 'widgets.php')
+			return;
+
+		//* Widget Style
+		wp_enqueue_style( self::SLUG.'-admin', self::$uri.'css/admin-widget.css' );
+
+		//* Widget Script
+		wp_enqueue_script( self::SLUG.'-admin', self::$uri.'js/admin-widget.js', array( 'jquery' ) );
+	}
+
+    //* Register widgets
+    public function widgets_init() 
+    {
+		register_widget( 'EJO_Featured_Widget' );
 	}
 }
 
-/**
- * Class used to implement a Text Widget widget.
- */
-final class EJO_Featured_Widget extends WP_Widget
-{
-	/**
-	 * Sets up a new widget instance.
-	 */
-	function __construct() 
-	{
-		$widget_title = __('Featured Widget', 'ejoweb');
-
-		$widget_info = array(
-			'classname'   => 'featured-widget',
-			'description' => __('Displays a simple widget with title, image/icon, text and button', 'ejoweb'),
-		);
-
-		$widget_control = array( 'width' => 600 );
-
-		parent::__construct( 'ejo-featured-widget', $widget_title, $widget_info, $widget_control );
-	}
-
-	/**
-	 * Outputs the content for the current widget instance.
-	 */
-	public function widget( $args, $instance ) 
-	{
-		//* Combine $instance data with defaults
-        $instance = wp_parse_args( $instance, array( 
-            'image_id' => '',
-            'icon' => '',
-            'title' => '',
-            'text' => '',
-            'linked_page_id' => '',
-            'link_text' => __('Lees meer', 'ejo-featured-widget'),
-        ));
-
-        //* Allow theme to override image size
-        $image_size = apply_filters( 'ejo_featured_widget_image_size', 'thumbnail' );
-
-        /* Run $instance['text'] through filter */
-		$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
-		?>
-
-		<?php echo $args['before_widget']; ?>
-
-		<?php if (!empty($instance['image_id'])) : // Check if there is an image_id ?>
-			
-			<div class="featured-image-container">
-				<?php echo wp_get_attachment_image( $instance['image_id'], $image_size, false, array('class'=>'featured-image') ); ?>
-			</div>
-
-		<?php endif; // END image_id check ?>
-
-		<?php if (!empty($instance['icon'])) : // Check if there is an icon ?>
-
-			<div class="icon-container">
-				<i class="fa <?php echo $instance['icon']; ?>"></i>
-			</div>
-
-		<?php endif; // END icon check ?>
-
-		<?php 
-		if (!empty($instance['title'])) { 
-			echo $args['before_title'] . $instance['title'] . $args['after_title'];
-		}
-		?>
-
-		<?php if (!empty($instance['text'])) : // Check if there is text ?>
-
-			<div class="textwidget"><?php echo wpautop($instance['text']); ?></div>
-
-		<?php endif; // END text check ?>
-
-		<?php if (!empty($instance['linked_page_id'])) : ?>
-			<a href="<?php echo get_the_permalink($instance['linked_page_id']); ?>" class="button"><?php echo $instance['link_text']; ?></a>
-		<?php endif; // Show button ?>
-
-		<?php echo $args['after_widget']; ?>
-
-		<?php
-	}
-
-	/**
-	 * Outputs the widget settings form.
-	 */
- 	public function form( $instance ) 
- 	{
-		//* Combine $instance data with defaults
-        $instance = wp_parse_args( $instance, array( 
-            'image_id' => '',
-            'icon' => '',
-            'title' => '',
-            'text' => '',
-            'linked_page_id' => '',
-            'link_text' => __('Lees meer', 'ejo-featured-widget'),
-        ));
-
-		?>
-		<p>
-			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:') ?></label>
-			<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $instance['title']; ?>" />
-		</p>
-
-		<?php 
-		ejo_image_select( $instance['image_id'], $this->get_field_id('image_id'), $this->get_field_name('image_id') );
-      	?>
-
-        <p>
-			<label for="<?php echo $this->get_field_id('icon'); ?>"><?php _e('Icon:') ?></label>
-			<input type="text" class="widefat ejo-icon-picker" id="<?php echo $this->get_field_id('icon'); ?>" name="<?php echo $this->get_field_name('icon'); ?>" value="<?php echo $instance['icon']; ?>" />
-			<?php //<span class="input-group-addon"><i class="fa fa-archive"></i></span> ?>
-		</p>
-
-		<p>
-			<label for="<?php echo $this->get_field_id('text'); ?>"><?php _e('Text:') ?></label>
-			<textarea class="widefat" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>" rows="5"><?php echo $instance['text']; ?></textarea>
-		</p>
-
-		<p>
-			<label for="<?php echo $this->get_field_id('linked_page_id'); ?>"><?php _e('Linken naar pagina:') ?></label>
-			<select id="<?php echo $this->get_field_id('linked_page_id'); ?>" name="<?php echo $this->get_field_name('linked_page_id'); ?>" class="widefat">
-				<?php
-					$all_pages = get_pages();
-
-					foreach ($all_pages as $page) {
-						$selected = selected($instance['linked_page_id'], $page->ID, false);
-						echo "<option value='".$page->ID."' ".$selected.">".$page->post_title."</option>";
-					}
-				?>
-			</select>
-		</p>
-
-		<p>
-			<label for="<?php echo $this->get_field_id('link_text'); ?>"><?php _e('Link tekst:') ?></label>
-			<input type="text" class="widefat" id="<?php echo $this->get_field_id('link_text'); ?>" name="<?php echo $this->get_field_name('link_text'); ?>" value="<?php echo $instance['link_text']; ?>" />
-		</p>
-
-		<?php
-	}
-
-	/**
-	 * Handles updating settings for the current widget instance.
-	 */
-	public function update( $new_instance, $old_instance ) 
-	{
-		/* Store old instance as defaults */
-		$instance = $old_instance;
-
-		/* Store new title */
-		$instance['title'] = strip_tags( $new_instance['title'] );
-
-		/* Store image id */
-		$instance['image_id'] = $new_instance['image_id'];
-
-		/* Store icon */
-		$instance['icon'] = $new_instance['icon'];
-
-		/* Store text */
-		if ( current_user_can('unfiltered_html') )
-			$instance['text'] =  $new_instance['text'];
-		else
-			$instance['text'] = wp_kses_post( stripslashes( $new_instance['text'] ) );
-
-		/* Store link */
-		$instance['linked_page_id'] = $new_instance['linked_page_id'];
-
-		/* Store link_text */
-		$instance['link_text'] = $new_instance['link_text'];
-
-		/* Return updated instance */
-		return $instance;
-	}
-}
-
+/* Call the wrapper class */
+EJO_Featured_Widget_Plugin::init();

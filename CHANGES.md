@@ -1,4 +1,5 @@
-0.x
+0.3
+- Improved code structure of plugin
 - Using $instance['variable'] instead of extracting them
 - Updated plugin meta header
 
