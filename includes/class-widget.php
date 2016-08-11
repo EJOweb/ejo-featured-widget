@@ -97,24 +97,35 @@ final class EJO_Featured_Widget extends WP_Widget
             'title' => '',
             'text' => '',
             'linked_page_id' => '',
-            'link_text' => __('Lees meer', 'ejo-featured-widget'),
+            'link_text' => __('Lees meer', self::SLUG),
         ));
 
-		?>
+        echo EJO_Featured_Widget_Plugin::check_requirements();
+        ?>
+
 		<p>
 			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:') ?></label>
 			<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $instance['title']; ?>" />
 		</p>
 
 		<?php 
-		ejo_image_select( $instance['image_id'], $this->get_field_id('image_id'), $this->get_field_name('image_id') );
+
+		//* Add image
+		if ( function_exists( 'ejo_image_select' ) ) {
+			ejo_image_select( $instance['image_id'], $this->get_field_id('image_id'), $this->get_field_name('image_id') );
+		}
+
       	?>
 
-        <p>
+        <div class="form-group ejo-iconpicker-container">
 			<label for="<?php echo $this->get_field_id('icon'); ?>"><?php _e('Icon:') ?></label>
-			<input type="text" class="widefat ejo-icon-picker" id="<?php echo $this->get_field_id('icon'); ?>" name="<?php echo $this->get_field_name('icon'); ?>" value="<?php echo $instance['icon']; ?>" />
-			<?php //<span class="input-group-addon"><i class="fa fa-archive"></i></span> ?>
-		</p>
+			<div class="input-group">
+				<input type="text" class="widefat form-control ejo-iconpicker" id="<?php echo $this->get_field_id('icon'); ?>" name="<?php echo $this->get_field_name('icon'); ?>" value="<?php echo $instance['icon']; ?>" />
+				<span class="ejo-iconpicker-component">
+					<?php echo !empty($instance['icon']) ? '<i class="fa '.$instance['icon'].'"></i>' : ''; ?>
+				</span>
+			</div>
+		</div>
 
 		<p>
 			<label for="<?php echo $this->get_field_id('text'); ?>"><?php _e('Text:') ?></label>

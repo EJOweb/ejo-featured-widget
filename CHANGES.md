@@ -1,3 +1,8 @@
+0.4
+- Fixed iconpicker
+- Added requirements notice to widget
+- Removed redundant script and style files
+
 0.3
 - Improved code structure of plugin
 - Using $instance['variable'] instead of extracting them

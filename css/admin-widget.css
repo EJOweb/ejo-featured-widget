@@ -1,4 +1,44 @@
-.ejo-icon-picker + .iconpicker-popover {
+.form-group {
+	font-size: 13px;
+	line-height: 1.5;
+	margin: 1em 0;
+}
+
+/*.ejo-iconpicker-container {*/
+.input-group {
+	position: relative;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: stretch;
+	flex-wrap: wrap;
+}
+
+.input-group > input {
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: 0;
+}
+
+.input-group > span {
+	box-sizing: border-box;
+	flex-basis: 40px;
+	flex-grow: 0;
+	flex-shrink: 0;
+	padding: 5px 6px;
+	font-size: 14px;
+	text-align: center;
+	background-color: #eee;
+    border: 1px solid rgba(0,0,0,.125);
+    border-left: none;	
+}
+
+.ejo-iconpicker-container .ejo-iconpicker-component {
+	flex-basis: 50px;
+}
+
+/* Fix Popover style */
+.ejo-iconpicker-container .iconpicker-popover {
     background-color: #fff;
     border: 1px solid #ccc;
     border: 1px solid rgba(0,0,0,.15);
@@ -6,8 +46,10 @@
     -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
     box-shadow: 0 6px 12px rgba(0,0,0,.175);
     /*background-clip: padding-box;*/
+ /*   left: auto !important;
+    right: 0;*/
 }
 
-.ejo-icon-picker + .iconpicker-popover a {
+.ejo-iconpicker-container .iconpicker-popover a {
     color: inherit;
 }
