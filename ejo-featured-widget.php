@@ -63,58 +63,55 @@ final class EJO_Featured_Widget extends WP_Widget
 	 */
 	public function widget( $args, $instance ) 
 	{
-		/** 
-		 * Combine $instance data with defaults
-		 * Then extract variables of this array
-		 */
-        extract( wp_parse_args( $instance, array( 
+		//* Combine $instance data with defaults
+        $instance = wp_parse_args( $instance, array( 
             'image_id' => '',
             'icon' => '',
             'title' => '',
             'text' => '',
             'linked_page_id' => '',
             'link_text' => __('Lees meer', 'ejo-featured-widget'),
-        )));
+        ));
 
         //* Allow theme to override image size
         $image_size = apply_filters( 'ejo_featured_widget_image_size', 'thumbnail' );
 
-        /* Run $text through filter */
-		$text = apply_filters( 'widget_text', $text, $instance, $this );
+        /* Run $instance['text'] through filter */
+		$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
 		?>
 
 		<?php echo $args['before_widget']; ?>
 
-		<?php if (!empty($image_id)) : // Check if there is an image_id ?>
+		<?php if (!empty($instance['image_id'])) : // Check if there is an image_id ?>
 			
 			<div class="featured-image-container">
-				<?php echo wp_get_attachment_image( $image_id, $image_size, false, array('class'=>'featured-image') ); ?>
+				<?php echo wp_get_attachment_image( $instance['image_id'], $image_size, false, array('class'=>'featured-image') ); ?>
 			</div>
 
 		<?php endif; // END image_id check ?>
 
-		<?php if (!empty($icon)) : // Check if there is an icon ?>
+		<?php if (!empty($instance['icon'])) : // Check if there is an icon ?>
 
 			<div class="icon-container">
-				<i class="fa <?php echo $icon; ?>"></i>
+				<i class="fa <?php echo $instance['icon']; ?>"></i>
 			</div>
 
 		<?php endif; // END icon check ?>
 
 		<?php 
-		if (!empty($title)) { 
-			echo $args['before_title'] . $title . $args['after_title'];
+		if (!empty($instance['title'])) { 
+			echo $args['before_title'] . $instance['title'] . $args['after_title'];
 		}
 		?>
 
-		<?php if (!empty($text)) : // Check if there is text ?>
+		<?php if (!empty($instance['text'])) : // Check if there is text ?>
 
-			<div class="textwidget"><?php echo wpautop($text); ?></div>
+			<div class="textwidget"><?php echo wpautop($instance['text']); ?></div>
 
 		<?php endif; // END text check ?>
 
-		<?php if (!empty($linked_page_id)) : ?>
-			<a href="<?php echo get_the_permalink($linked_page_id); ?>" class="button"><?php echo $link_text; ?></a>
+		<?php if (!empty($instance['linked_page_id'])) : ?>
+			<a href="<?php echo get_the_permalink($instance['linked_page_id']); ?>" class="button"><?php echo $instance['link_text']; ?></a>
 		<?php endif; // Show button ?>
 
 		<?php echo $args['after_widget']; ?>
@@ -127,38 +124,35 @@ final class EJO_Featured_Widget extends WP_Widget
 	 */
  	public function form( $instance ) 
  	{
-		/** 
-		 * Combine $instance data with defaults
-		 * Then extract variables of this array
-		 */
-        extract( wp_parse_args( $instance, array( 
+		//* Combine $instance data with defaults
+        $instance = wp_parse_args( $instance, array( 
             'image_id' => '',
             'icon' => '',
             'title' => '',
             'text' => '',
             'linked_page_id' => '',
-            'link_text' => '',
-        )));
+            'link_text' => __('Lees meer', 'ejo-featured-widget'),
+        ));
 
 		?>
 		<p>
 			<label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:') ?></label>
-			<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $title; ?>" />
+			<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $instance['title']; ?>" />
 		</p>
 
 		<?php 
-		ejo_image_select( $image_id, $this->get_field_id('image_id'), $this->get_field_name('image_id') );
+		ejo_image_select( $instance['image_id'], $this->get_field_id('image_id'), $this->get_field_name('image_id') );
       	?>
 
         <p>
 			<label for="<?php echo $this->get_field_id('icon'); ?>"><?php _e('Icon:') ?></label>
-			<input type="text" class="widefat ejo-icon-picker" id="<?php echo $this->get_field_id('icon'); ?>" name="<?php echo $this->get_field_name('icon'); ?>" value="<?php echo $icon; ?>" />
+			<input type="text" class="widefat ejo-icon-picker" id="<?php echo $this->get_field_id('icon'); ?>" name="<?php echo $this->get_field_name('icon'); ?>" value="<?php echo $instance['icon']; ?>" />
 			<?php //<span class="input-group-addon"><i class="fa fa-archive"></i></span> ?>
 		</p>
 
 		<p>
 			<label for="<?php echo $this->get_field_id('text'); ?>"><?php _e('Text:') ?></label>
-			<textarea class="widefat" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>" rows="5"><?php echo $text; ?></textarea>
+			<textarea class="widefat" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>" rows="5"><?php echo $instance['text']; ?></textarea>
 		</p>
 
 		<p>
@@ -168,7 +162,7 @@ final class EJO_Featured_Widget extends WP_Widget
 					$all_pages = get_pages();
 
 					foreach ($all_pages as $page) {
-						$selected = selected($linked_page_id, $page->ID, false);
+						$selected = selected($instance['linked_page_id'], $page->ID, false);
 						echo "<option value='".$page->ID."' ".$selected.">".$page->post_title."</option>";
 					}
 				?>
@@ -177,7 +171,7 @@ final class EJO_Featured_Widget extends WP_Widget
 
 		<p>
 			<label for="<?php echo $this->get_field_id('link_text'); ?>"><?php _e('Link tekst:') ?></label>
-			<input type="text" class="widefat" id="<?php echo $this->get_field_id('link_text'); ?>" name="<?php echo $this->get_field_name('link_text'); ?>" value="<?php echo $link_text; ?>" />
+			<input type="text" class="widefat" id="<?php echo $this->get_field_id('link_text'); ?>" name="<?php echo $this->get_field_name('link_text'); ?>" value="<?php echo $instance['link_text']; ?>" />
 		</p>
 
 		<?php
