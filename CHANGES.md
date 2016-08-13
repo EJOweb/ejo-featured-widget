@@ -1,5 +1,6 @@
 x.x
 - Made widget form smaller
+- Added widget output filter and default widget output
 
 0.4
 - Fixed iconpicker

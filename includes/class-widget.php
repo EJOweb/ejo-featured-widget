@@ -29,6 +29,8 @@ final class EJO_Featured_Widget extends WP_Widget
 	 */
 	public function widget( $args, $instance ) 
 	{
+		echo $args['before_widget'];
+
 		//* Combine $instance data with defaults
         $instance = wp_parse_args( $instance, array( 
             'image_id' => '',
@@ -39,17 +41,36 @@ final class EJO_Featured_Widget extends WP_Widget
             'link_text' => __('Lees meer', self::SLUG),
         ));
 
-        //* Allow theme to override image size
-        $image_size = apply_filters( 'ejo_featured_widget_image_size', 'thumbnail' );
-
         //* Run $instance['text'] through filter
 		$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
-		?>
 
-		<?php echo $args['before_widget']; ?>
+        //* Allow widget output to be filtered
+        $filtered = apply_filters( 'ejo_featured_widget_output', '', $args, $instance, $this->id_base );
+
+        //* If $inside is filtered, add it to output
+        //* Else load template loader
+        if ( $filtered ) {
+        	echo $filtered;
+        }
+        elseif ( class_exists('EJO_Base_template_loader') ) {
+
+        }   
+        else {
+        	$this->render_default_widget($args, $instance);			
+		}
+
+		echo $args['after_widget'];
+	}
+
+	/**
+	 * Render default widget
+	 */
+	public function render_default_widget($args, $instance)
+	{
+		$image_size = apply_filters( 'ejo_featured_widget_image_size', 'thumbnail' ); ?>
 
 		<?php if (!empty($instance['image_id'])) : // Check if there is an image_id ?>
-			
+				
 			<div class="featured-image-container">
 				<?php echo wp_get_attachment_image( $instance['image_id'], $image_size, false, array('class'=>'featured-image') ); ?>
 			</div>
@@ -79,8 +100,6 @@ final class EJO_Featured_Widget extends WP_Widget
 		<?php if (!empty($instance['linked_page_id'])) : ?>
 			<a href="<?php echo get_the_permalink($instance['linked_page_id']); ?>" class="button"><?php echo $instance['link_text']; ?></a>
 		<?php endif; // Show button ?>
-
-		<?php echo $args['after_widget']; ?>
 
 		<?php
 	}
