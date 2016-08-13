@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EJO Featured Widget
  * Description: A widget to show title, image or icon, text and a button
- * Version: 	0.4
+ * Version: 	0.5
  * Author: 		EJOweb
  * Author URI: 	http://www.ejoweb.nl/
  * 
@@ -19,7 +19,7 @@ final class EJO_Featured_Widget_Plugin
     const SLUG = 'ejo-featured-widget';
 
     //* Version number of this plugin
-    const VERSION = '0.4';
+    const VERSION = '0.5';
 
     //* Stores the directory path for this plugin.
     public static $dir;
