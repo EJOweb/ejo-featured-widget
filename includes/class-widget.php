@@ -19,7 +19,7 @@ final class EJO_Featured_Widget extends WP_Widget
 			'description' => __('Displays a simple widget with title, image/icon, text and button', 'ejoweb'),
 		);
 
-		$widget_control = array( 'width' => 600 );
+		$widget_control = array( 'width' => 400 );
 
 		parent::__construct( self::SLUG, $widget_title, $widget_info, $widget_control );
 	}

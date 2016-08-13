@@ -1,3 +1,6 @@
+x.x
+- Made widget form smaller
+
 0.4
 - Fixed iconpicker
 - Added requirements notice to widget
