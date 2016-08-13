@@ -2,6 +2,8 @@ x.x
 - Made widget form smaller
 - Added widget output filter and default widget output
 - Added template loader
+- Moved template loader to EJO Base plugin
+- Added support for EJO_Widget_Template_Loader
 
 0.4
 - Fixed iconpicker

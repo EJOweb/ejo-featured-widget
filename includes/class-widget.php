@@ -44,151 +44,32 @@ final class EJO_Featured_Widget extends WP_Widget
         //* Run $instance['text'] through filter
 		$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
 
-        //* Allow widget output to be filtered
+		//* Check for widget-template in widget-folder of theme
+		if ( class_exists( 'EJO_Widget_Template_Loader' ) ) {
+			$template_file = EJO_Widget_Template_Loader::get_template_file( $this->id_base, $args['id'] );
+		}
+
+		//* Allow widget output to be filtered
         $filtered = apply_filters( 'ejo_featured_widget_output', '', $args, $instance, $this->id_base );
 
-        //* If $inside is filtered, add it to output
-        //* Else load template loader or default widget
+        /** 
+         * Output priority:
+         *  1. Filter
+         *	2. Theme template
+         * 	3. Default widget
+         */
         if ( $filtered ) {
         	echo $filtered;
         }
-        else {
-			$template_file_names = $this->get_template_file_names( $this->id_base, $args['id'] );
-			$template_directories = $this->get_template_directories();
-
-			$template_file = $this->get_template_location( $template_file_names, $template_directories );
-
-			if ($template_file) {
-				$this->load_template( $template_file, $args, $instance);
-			}
-			else {
-				$this->render_default_widget($args, $instance);			
-			}
-        }   
-		
+		elseif ( !empty($template_file) ) {
+			EJO_Widget_Template_Loader::load_template( $template_file, $args, $instance);
+		}
+		else {
+			$this->render_default_widget($args, $instance);	
+		}
 
 		echo $args['after_widget'];
 	}
-
-	/**
-	 * Load a template file.
-	 *
-	 * @since 4.0.0
-	 *
-	 * @param string $template_file Absolute path to a file or list of template parts.
-	 * @param array  $data          Optional. List of variables to extract into the template scope.
-	 */
-	public function load_template( $template_file, $args, $instance ) {
-		// global $posts, $post, $wp_did_header, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
-
-		// if ( is_array( $data ) && ! empty( $data ) ) {
-		// 	extract( $data, EXTR_SKIP );
-		// 	unset( $data );
-		// }
-
-		if ( file_exists( $template_file ) ) {
-			require( $template_file );
-		}
-	}
-	
-	/**
-	 * Create the file names of templates.
-	 *
-	 * @return array
-	 */
-	protected function get_template_file_names( $widget_slug, $sidebar_slug ) 
-	{
-		$template_file_names = array();
-		$template_file_names[] = $sidebar_slug . '_' . $widget_slug . '.php';
-		$template_file_names[] = $widget_slug . '.php';
-
-		return $template_file_names;
-	}
-
-	/**
-	 * Return a list of paths to check for template locations.
-	 *
-	 * Default is to check in a child theme (if relevant) before a parent theme, so that themes which inherit from a
-	 * parent theme can just overload one file. If the template is not found in either of those, it looks in the
-	 * theme-compat folder last.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return mixed|void
-	 */
-	protected function get_template_directories() 
-	{
-		$theme_template_directory = 'widget/';
-
-		//* Prioritized order of template locations
-		$template_directories = array();
-
-		//* Start by setting theme location high in order
-		$template_directories[10] = trailingslashit( get_template_directory() ) . $theme_template_directory;
-		$template_directories[11] = trailingslashit( get_template_directory() );
-
-		//* Set child theme location first if active
-		if ( is_child_theme() ) {
-			$template_directories[1] = trailingslashit( get_stylesheet_directory() ) . $theme_template_directory;
-			$template_directories[2] = trailingslashit( get_stylesheet_directory() );
-		}
-
-		// Sort the file paths based on priority.
-		ksort( $template_directories, SORT_NUMERIC );
-
-		return array_map( 'trailingslashit', $template_directories );
-	}
-
-
-	/**
-	 * Retrieve the name of the highest priority template file that exists.
-	 *
-	 * Searches in the STYLESHEETPATH before TEMPLATEPATH so that themes which
-	 * inherit from a parent theme can just overload one file. If the template is
-	 * not found in either of those, it looks in the theme-compat folder last.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string|array $template_file_names Template file(s) to search for, in order.
-	 * @param bool         $load           If true the template file will be loaded if it is found.
-	 * @param bool         $require_once   Whether to require_once or require. Default true.
-	 *                                     Has no effect if $load is false.
-	 *
-	 * @return string The template filename if one is located.
-	 */
-	public function get_template_location( $template_file_names, $template_directories ) 
-	{
-		$located = false;
-
-		//* Try to find a template file.
-		foreach ( $template_file_names as $template_file_name ) {
-
-			//* Trim off any slashes from the template name.
-			$template_file_name = ltrim( $template_file_name, '/' );
-
-			//* Try locating this template file by looping through the template paths.
-			foreach ( $template_directories as $template_directory ) {
-
-				if ( file_exists( $template_directory . $template_file_name ) ) {
-
-					$located = $template_directory . $template_file_name;
-
-					//* Break out both loops
-					break 2;
-				}
-			}
-		}
-
-		return $located;
-	}
-
-
-
-
-
-
-
-
 
 
 	/**
