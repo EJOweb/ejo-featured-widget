@@ -1,6 +1,7 @@
 x.x
 - Made widget form smaller
 - Added widget output filter and default widget output
+- Added template loader
 
 0.4
 - Fixed iconpicker

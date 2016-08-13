@@ -48,7 +48,8 @@ final class EJO_Featured_Widget_Plugin
         add_action( 'plugins_loaded', array( $this, 'setup' ), 1 );
 
         // Include required files
-		include_once( self::$dir . 'includes/class-widget.php' );
+        include_once( self::$dir . 'includes/class-widget.php' );
+		// include_once( self::$dir . 'includes/class-template-loader.php' );
 
 		//* Add custom styles & scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles_and_scripts' ) );
