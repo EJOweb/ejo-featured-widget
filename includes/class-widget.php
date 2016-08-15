@@ -160,6 +160,7 @@ final class EJO_Featured_Widget extends WP_Widget
 		<p>
 			<label for="<?php echo $this->get_field_id('linked_page_id'); ?>"><?php _e('Linken naar pagina:') ?></label>
 			<select id="<?php echo $this->get_field_id('linked_page_id'); ?>" name="<?php echo $this->get_field_name('linked_page_id'); ?>" class="widefat">
+				<option value="">-- Geen link --</option>
 				<?php
 					$all_pages = get_pages();
 

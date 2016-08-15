@@ -1,3 +1,5 @@
+- Added option for no-linking
+
 0.6
 - Improved structuring of plugin
 - Improved loading of theme template
