@@ -1,3 +1,4 @@
+0.6
 - Improved structuring of plugin
 - Improved loading of theme template
 
