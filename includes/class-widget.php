@@ -29,8 +29,6 @@ final class EJO_Featured_Widget extends WP_Widget
 	 */
 	public function widget( $args, $instance ) 
 	{
-		echo $args['before_widget'];
-
 		//* Combine $instance data with defaults
         $instance = wp_parse_args( $instance, array( 
             'image_id' => '',
@@ -39,36 +37,28 @@ final class EJO_Featured_Widget extends WP_Widget
             'text' => '',
             'linked_page_id' => '',
             'link_text' => __('Lees meer', self::SLUG),
-        ));
+        ));        
 
-        //* Run $instance['text'] through filter
-		$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
-
-		//* Check for widget-template in widget-folder of theme
+		//* Try to load theme template
 		if ( class_exists( 'EJO_Widget_Template_Loader' ) ) {
-			$template_file = EJO_Widget_Template_Loader::get_template_file( $this->id_base, $args['id'] );
+
+			$template_loaded = EJO_Widget_Template_Loader::load_template( $args, $instance, $this );
 		}
 
-		//* Allow widget output to be filtered
-        $filtered = apply_filters( 'ejo_featured_widget_output', '', $args, $instance, $this->id_base );
+		//* If no template loaded, proceed widget output
+		if ( empty($template_loaded) ) {
 
-        /** 
-         * Output priority:
-         *  1. Filter
-         *	2. Theme template
-         * 	3. Default widget
-         */
-        if ( $filtered ) {
-        	echo $filtered;
-        }
-		elseif ( !empty($template_file) ) {
-			EJO_Widget_Template_Loader::load_template( $template_file, $args, $instance);
-		}
-		else {
-			$this->render_default_widget($args, $instance);	
-		}
+			//* Allow filtered widget-output
+			$filtered_output = apply_filters( 'ejo_featured_widget_output', '', $args, $instance, $this );
 
-		echo $args['after_widget'];
+			//* Print filtered_output
+			echo $filtered_output;
+
+			//* If no filtered output show default widget 
+			if ( ! $filtered_output ) {
+				$this->render_default_widget($args, $instance);
+			}			
+		}
 	}
 
 
@@ -77,6 +67,11 @@ final class EJO_Featured_Widget extends WP_Widget
 	 */
 	public function render_default_widget($args, $instance)
 	{
+		echo $args['before_widget'];
+
+		//* Run $instance['text'] through filter
+		$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
+
 		$image_size = apply_filters( 'ejo_featured_widget_image_size', 'thumbnail' ); ?>
 
 		<?php if (!empty($instance['image_id'])) : // Check if there is an image_id ?>
@@ -112,6 +107,7 @@ final class EJO_Featured_Widget extends WP_Widget
 		<?php endif; // Show button ?>
 
 		<?php
+		echo $args['after_widget'];
 	}
 
 	/**

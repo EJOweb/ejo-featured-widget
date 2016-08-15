@@ -1,3 +1,6 @@
+- Improved structuring of plugin
+- Improved loading of theme template
+
 0.5
 - Made widget form smaller
 - Added widget output filter and default widget output
