@@ -69,42 +69,50 @@ final class EJO_Featured_Widget extends WP_Widget
 	{
 		echo $args['before_widget'];
 
-		//* Run $instance['text'] through filter
-		$instance['text'] = apply_filters( 'widget_text', $instance['text'], $instance, $this );
+		$image_size = apply_filters( 'ejo_featured_widget_image_size', 'thumbnail' ); 
+		$image_class = apply_filters( 'ejo_featured_widget_image_class', 'featured-image' ); 
 
-		$image_size = apply_filters( 'ejo_featured_widget_image_size', 'thumbnail' ); ?>
+		//* Get pattern for linking
+		if ($instance['linked_page_id']) {
+			$link = get_the_permalink($instance['linked_page_id']);
+			$link_title = the_title_attribute( array( 'echo' => false, 'post' => $instance['linked_page_id'] ) );
 
-		<?php if (!empty($instance['image_id'])) : // Check if there is an image_id ?>
+			$link_pattern = '<a href="'.$link.'" title="'.$link_title.'">%1$s</a>';
+		}
+		else {
+			$link_pattern = '%s';
+		}
+		?>
+
+		<?php if ($instance['image_id']) : // Check if there is an image_id ?>
 				
-			<div class="featured-image-container">
-				<?php echo wp_get_attachment_image( $instance['image_id'], $image_size, false, array('class'=>'featured-image') ); ?>
+			<div class="image-container">
+				<?php printf( $link_pattern, wp_get_attachment_image( $instance['image_id'], $image_size, false, array('class'=>$image_class) ) ); ?> 
 			</div>
 
-		<?php endif; // END image_id check ?>
-
-		<?php if (!empty($instance['icon'])) : // Check if there is an icon ?>
+		<?php elseif ($instance['icon']) : // Check if there is an icon ?>
 
 			<div class="icon-container">
 				<i class="fa <?php echo $instance['icon']; ?>"></i>
 			</div>
 
-		<?php endif; // END icon check ?>
+		<?php endif; // END image_id and icon check ?>
 
-		<?php 
-		if (!empty($instance['title'])) { 
-			echo $args['before_title'] . $instance['title'] . $args['after_title'];
-		}
-		?>
+		<div class="entry-header">		
+			<?php printf( '<h2 class="entry-title">'.$link_pattern.'</h2>', $instance['title'] ); ?> 
+		</div>
 
-		<?php if (!empty($instance['text'])) : // Check if there is text ?>
+		<div class="entry-content">
+			<?php echo wpautop($instance['text']); ?>
+		</div>
 
-			<div class="textwidget"><?php echo wpautop($instance['text']); ?></div>
+		<?php if ( $instance['linked_page_id'] && $instance['link_text'] ) : ?>
 
-		<?php endif; // END text check ?>
+			<div class="entry-footer">
+				<?php printf( $link_pattern, $instance['link_text'] ); ?> 
+			</div>
 
-		<?php if (!empty($instance['linked_page_id'])) : ?>
-			<a href="<?php echo get_the_permalink($instance['linked_page_id']); ?>" class="button"><?php echo $instance['link_text']; ?></a>
-		<?php endif; // Show button ?>
+		<?php endif; // END link check ?>
 
 		<?php
 		echo $args['after_widget'];

@@ -1,4 +1,5 @@
-- Added option for no-linking
+- Improved default widget output
+- Added option for no link
 
 0.6
 - Improved structuring of plugin
