@@ -1,3 +1,4 @@
+- Fixed textdomain bug
 - Improved default widget output
 - Added option for no link
 

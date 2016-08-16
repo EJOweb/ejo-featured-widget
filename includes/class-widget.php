@@ -12,11 +12,11 @@ final class EJO_Featured_Widget extends WP_Widget
 	 */
 	function __construct() 
 	{
-		$widget_title = __('Featured Widget', 'ejoweb');
+		$widget_title = __('Featured Widget', self::SLUG);
 
 		$widget_info = array(
 			'classname'   => 'featured-widget',
-			'description' => __('Displays a simple widget with title, image/icon, text and button', 'ejoweb'),
+			'description' => __('Displays a simple widget with title, image/icon, text and button', self::SLUG),
 		);
 
 		$widget_control = array( 'width' => 400 );
