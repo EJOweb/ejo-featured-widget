@@ -1,3 +1,5 @@
+- Included own image-picker code (before dependant on EJObase)
+- Improved loading of theme template
 - Fixed textdomain bug
 - Improved default widget output
 - Added option for no link

@@ -7,11 +7,18 @@ final class EJO_Featured_Widget extends WP_Widget
 	//* Slug of this widget
     const SLUG = EJO_Featured_Widget_Plugin::SLUG;
 
+    const VERSION = EJO_Featured_Widget_Plugin::VERSION;
+
+    public static $uri;
+
 	/**
 	 * Sets up a new widget instance.
 	 */
 	function __construct() 
 	{
+		//* Set uri
+		self::$uri = EJO_Featured_Widget_Plugin::$uri;
+
 		$widget_title = __('Featured Widget', self::SLUG);
 
 		$widget_info = array(
@@ -22,6 +29,22 @@ final class EJO_Featured_Widget extends WP_Widget
 		$widget_control = array( 'width' => 400 );
 
 		parent::__construct( self::SLUG, $widget_title, $widget_info, $widget_control );
+
+		//* Just register... not only when using widget... ?
+		add_action( 'admin_enqueue_scripts', array( $this, 'register_ejo_image_picker_files' ) );
+	}
+
+	/**
+	 * Registers and enqueues admin-specific JavaScript and CSS only on widgets page.
+	 */ 
+	function register_ejo_image_picker_files($hook) 
+	{
+		if ($hook != 'widgets.php')
+			return;
+
+	    // Image Widget
+	    wp_enqueue_media();     
+	    wp_enqueue_script( 'ejo-image-picker', self::$uri . 'js/admin-image-picker.js', array('jquery'), self::VERSION, true );
 	}
 
 	/**
@@ -39,26 +62,20 @@ final class EJO_Featured_Widget extends WP_Widget
             'link_text' => __('Lees meer', self::SLUG),
         ));        
 
-		//* Try to load theme template
-		if ( class_exists( 'EJO_Widget_Template_Loader' ) ) {
+		//* Check if Widget Template Loader exists and try to load template
+		if ( class_exists( 'EJO_Widget_Template_Loader' ) && EJO_Widget_Template_Loader::load_template( $args, $instance, $this ) ) 
+			return;
 
-			$template_loaded = EJO_Widget_Template_Loader::load_template( $args, $instance, $this );
-		}
+		//* Allow filtered widget-output
+		$filtered_output = apply_filters( 'ejo_featured_widget_output', '', $args, $instance, $this );
 
-		//* If no template loaded, proceed widget output
-		if ( empty($template_loaded) ) {
+		//* Print filtered_output
+		echo $filtered_output;
 
-			//* Allow filtered widget-output
-			$filtered_output = apply_filters( 'ejo_featured_widget_output', '', $args, $instance, $this );
-
-			//* Print filtered_output
-			echo $filtered_output;
-
-			//* If no filtered output show default widget 
-			if ( ! $filtered_output ) {
-				$this->render_default_widget($args, $instance);
-			}			
-		}
+		//* If no filtered output show default widget 
+		if ( ! $filtered_output ) {
+			$this->render_default_widget($args, $instance);
+		}			
 	}
 
 
@@ -141,14 +158,20 @@ final class EJO_Featured_Widget extends WP_Widget
 			<input type="text" class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" value="<?php echo $instance['title']; ?>" />
 		</p>
 
-		<?php 
+      	<div class="ejo-image-picker">
+	        <label><?php _e( 'Featured Image' ); ?></label>
+	        <p class="image-container">
+	            <?php if ( $instance['image_id'] ) : ?>
 
-		//* Add image
-		if ( function_exists( 'ejo_image_select' ) ) {
-			ejo_image_select( $instance['image_id'], $this->get_field_id('image_id'), $this->get_field_name('image_id') );
-		}
+	                <?php echo wp_get_attachment_image( $instance['image_id'], 'thumbnail', false ); ?>
 
-      	?>
+	            <?php endif; ?>
+	        </p>
+
+	        <input type="hidden" id="<?php echo $this->get_field_id('image_id'); ?>" name="<?php echo $this->get_field_name('image_id'); ?>" value="<?php echo $instance['image_id']; ?>" class="image-id" />
+	        <a class="button picker-button" href="#"><?php _e('Pick an image'); ?></a>
+	        <a class="button remove-button" href="#"><?php _e('Remove the image'); ?></a>
+	    </div>
 
         <div class="form-group ejo-iconpicker-container">
 			<label for="<?php echo $this->get_field_id('icon'); ?>"><?php _e('Icon:') ?></label>

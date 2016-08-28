@@ -47,9 +47,6 @@ final class EJO_Featured_Widget_Plugin
 		//* Setup
         add_action( 'plugins_loaded', array( $this, 'setup' ), 1 );
 
-        // Include required files
-        include_once( self::$dir . 'includes/class-widget.php' );
-
 		//* Add custom styles & scripts
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles_and_scripts' ) );
 
@@ -66,6 +63,9 @@ final class EJO_Featured_Widget_Plugin
 
         //* Load the translation for the plugin
         load_plugin_textdomain( self::SLUG, false, self::SLUG.'/languages' );
+
+        // Include required files
+        include_once( self::$dir . 'class-widget.php' );
     }
 
     //* Admin Styles & Scripts

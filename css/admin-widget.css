@@ -1,11 +1,11 @@
-.form-group {
+.widget[id*="ejo-featured-widget"] .form-group {
 	font-size: 13px;
 	line-height: 1.5;
 	margin: 1em 0;
 }
 
 /*.ejo-iconpicker-container {*/
-.input-group {
+.widget[id*="ejo-featured-widget"] .input-group {
 	position: relative;
 	display: flex;
 	flex-direction: row;
@@ -14,13 +14,13 @@
 	flex-wrap: wrap;
 }
 
-.input-group > input {
+.widget[id*="ejo-featured-widget"] .input-group > input {
 	flex-grow: 1;
 	flex-shrink: 1;
 	flex-basis: 0;
 }
 
-.input-group > span {
+.widget[id*="ejo-featured-widget"] .input-group > span {
 	box-sizing: border-box;
 	flex-basis: 40px;
 	flex-grow: 0;
@@ -33,12 +33,12 @@
     border-left: none;	
 }
 
-.ejo-iconpicker-container .ejo-iconpicker-component {
+.widget[id*="ejo-featured-widget"] .ejo-iconpicker-container .ejo-iconpicker-component {
 	flex-basis: 50px;
 }
 
 /* Fix Popover style */
-.ejo-iconpicker-container .iconpicker-popover {
+.widget[id*="ejo-featured-widget"] .ejo-iconpicker-container .iconpicker-popover {
     background-color: #fff;
     border: 1px solid #ccc;
     border: 1px solid rgba(0,0,0,.15);
@@ -50,6 +50,21 @@
     right: 0;*/
 }
 
-.ejo-iconpicker-container .iconpicker-popover a {
+.widget[id*="ejo-featured-widget"] .ejo-iconpicker-container .iconpicker-popover a {
     color: inherit;
+}
+
+/* Image Picker */
+.widget[id*="ejo-featured-widget"] .ejo-image-picker {
+	border: 1px dashed #aaa;
+	padding: 10px;
+	font-size: 13px;
+    line-height: 1.5;
+    margin: 1em 0;
+}
+
+.widget[id*="ejo-featured-widget"] .ejo-image-picker img {
+	max-width: 100%;
+	height: auto;
+	cursor: pointer;
 }
