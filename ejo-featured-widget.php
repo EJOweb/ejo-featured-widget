@@ -2,7 +2,7 @@
 /**
  * Plugin Name: EJO Featured Widget
  * Description: A widget to show title, image or icon, text and a button
- * Version: 	0.6
+ * Version: 	0.7
  * Author: 		EJOweb
  * Author URI: 	http://www.ejoweb.nl/
  * 
@@ -19,7 +19,7 @@ final class EJO_Featured_Widget_Plugin
     const SLUG = 'ejo-featured-widget';
 
     //* Version number of this plugin
-    const VERSION = '0.6';
+    const VERSION = '0.7';
 
     //* Stores the directory path for this plugin.
     public static $dir;
@@ -91,10 +91,6 @@ final class EJO_Featured_Widget_Plugin
 	public static function check_requirements()
 	{
 		$output = '';
-
-		if ( ! function_exists( 'ejo_image_select' ) ) {
-        	$output .= '<li>- <strong>ejo_image_select</strong>-function not available</li>';
-		}
 
     	if ( ! class_exists( 'Better_Font_Awesome_Library' ) ) {
     		$output .= '<li>- <strong>Better_Font_Awesome_Library</strong>-class not available</li>';

@@ -1,3 +1,4 @@
+0.7
 - Included own image-picker code (before dependant on EJObase)
 - Improved loading of theme template
 - Fixed textdomain bug
